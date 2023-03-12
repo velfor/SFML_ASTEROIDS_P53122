@@ -12,10 +12,10 @@ public:
 		texture.loadFromFile(fileName);
 		sprite.setTexture(texture);
 		if (size == BIG) {
-			sprite.setScale(0.5f, 0.5f);
+			sprite.setScale(0.4f, 0.4f);
 		}
 		else if (size == AVERAGE) {
-			sprite.setScale(0.25f, 0.25f);
+			sprite.setScale(0.2f, 0.2f);
 		}
 		else if (size == SMALL) {
 			sprite.setScale(0.125f, 0.125f);
@@ -26,6 +26,24 @@ public:
 
 	void update() {
 		sprite.move(speed);
+		sf::Vector2f pos = sprite.getPosition();
+		if (pos.x < LEFT_BORDER || pos.x > RIGHT_BORDER || pos.y < TOP_BORDER || 
+			pos.y > BOTTOM_BORDER) 
+		{
+			setRandomPosition();
+		}
+	}
+
+	void setRandomPosition() {
+		float x = rand() % 301 - 300.f;
+		int choice = rand() % 10000;
+		if (choice < 5000) x += 1500.f;
+		float y = rand() % 301 - 300.f;
+		choice = rand() % 10000;
+		if (choice < 5000) y += 1200.f;
+		float speedx = rand() % 9 - 4.f;
+		float speedy = rand() % 9 - 4.f;
+		sprite.setPosition(x, y);
 	}
 
 	sf::Sprite getSprite() { return sprite; }
