@@ -41,10 +41,10 @@ public:
 		float y = rand() % 301 - 300.f;
 		choice = rand() % 10000;
 		if (choice < 5000) y += 1200.f;
+		sprite.setPosition(x, y);
 		float speedx = rand() % 9 - 4.f;
 		float speedy = rand() % 9 - 4.f;
-		sprite.setPosition(x, y);
 	}
 
-	sf::Sprite getSprite() { return sprite; }
+	sf::Sprite& getSprite() { return sprite; }
 };

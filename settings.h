@@ -8,6 +8,7 @@ const float FPS = 60.f;
 
 const double PI = 3.141592653589793;
 
+const std::string IMAGES_FOLDER = "images\\";
 const std::string PLAYER_FILE_NAME = "images\\spaceShips_008.png";
 
 const float TOP_BORDER = -300.f;
@@ -15,4 +16,5 @@ const float BOTTOM_BORDER = 1200.f;
 const float LEFT_BORDER = -300.f;
 const float RIGHT_BORDER = 1500.f;
 
-
+const float LASER_SPEED = 15.f;
+const std::string LASER_FILE_NAME = "laserRed03.png";

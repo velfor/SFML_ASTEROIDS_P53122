@@ -1,6 +1,8 @@
 #pragma once
 #include "settings.h"
 #include "cmath"
+#include <list>
+#include "laser.h"
 
 class Player {
 private:
@@ -8,6 +10,8 @@ private:
 	sf::Texture texture;
 	int angle;
 	float speed, speedx, speedy;
+	std::list<Laser*> lasers;
+
 public:
 	Player() {
 		texture.loadFromFile(PLAYER_FILE_NAME);
@@ -18,8 +22,8 @@ public:
 		angle = 0;
 		speed = 0.f;
 	}
+
 	void update() {
-		
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {//влево
 			angle -= 3;
 		}
@@ -35,9 +39,26 @@ public:
 		}
 		if (speed < 0) speed = 0.f;
 		else if (speed > 10.f) speed = 10.f;
+
 		speedx = speed * sin(angle * PI / 180);
 		speedy = -speed * cos(angle * PI / 180);
 		sprite.move(speedx,speedy);
+		fire();
+		for (auto laser : lasers) {
+			laser->update();
+		}
 	}
-	sf::Sprite getSprite() { return sprite; }
+
+	void fire() {
+		//если нажал кнопку Выстрел
+		//то создать Лазер
+		//добавить Лазер в СписокЛазеров
+	}
+
+	//sf::Sprite& getSprite() { return sprite; }
+
+	void draw(sf::RenderWindow& window) {
+		//нарисовать свой спрайт
+		//нарисовать все лазеры
+	}
 };

@@ -4,12 +4,16 @@
 #include <vector>
 #include "meteor.h"
 #include "player.h"
+#include <list>
+#include "laser.h"
 
 class Game {
 private:
 	sf::RenderWindow window;
 	std::vector<Meteor*> meteors;
 	Player player;
+	
+
 public:
 	void spawnMeteors(size_t n) {
 		for (int i = 0; i < n; i++) {
