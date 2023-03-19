@@ -11,6 +11,7 @@ private:
 	int angle;
 	float speed, speedx, speedy;
 	std::list<Laser*> lasers;
+	sf::Clock timer;
 
 public:
 	Player() {
@@ -21,6 +22,7 @@ public:
 		sprite.setPosition(WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
 		angle = 0;
 		speed = 0.f;
+		timer.restart();
 	}
 
 	void update() {
@@ -50,15 +52,22 @@ public:
 	}
 
 	void fire() {
-		//если нажал кнопку Выстрел
-		//то создать Лазер
-		//добавить Лазер в СписокЛазеров
+		int now = timer.getElapsedTime().asMilliseconds();
+		if (now > FIRE_COOLDOWN) {
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) ||
+				sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			{
+				auto laser = new Laser(sprite.getPosition(), angle);
+				lasers.push_back(laser);
+				timer.restart();
+			}
+		}
 	}
 
-	//sf::Sprite& getSprite() { return sprite; }
-
 	void draw(sf::RenderWindow& window) {
-		//нарисовать свой спрайт
-		//нарисовать все лазеры
+		window.draw(sprite);
+		for (auto laser : lasers) {
+			window.draw(laser->getSprite());
+		}
 	}
 };

@@ -54,7 +54,8 @@ public:
 		for (int i = 0; i < meteors.size(); i++) {
 			window.draw(meteors.at(i)->getSprite());
 		}
-		window.draw(player.getSprite());
+		//window.draw(player.getSprite());
+		player.draw(window);
 		window.display();
 	}
 

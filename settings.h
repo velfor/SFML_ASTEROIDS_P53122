@@ -18,3 +18,4 @@ const float RIGHT_BORDER = 1500.f;
 
 const float LASER_SPEED = 15.f;
 const std::string LASER_FILE_NAME = "laserRed03.png";
+const int FIRE_COOLDOWN = 200;
