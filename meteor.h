@@ -6,6 +6,8 @@ private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 	sf::Vector2f speed;
+	int damage;
+
 public:
 	enum MeteorSize {SMALL, AVERAGE, BIG};
 	Meteor(std::string fileName, MeteorSize size, sf::Vector2f pos, sf::Vector2f fspeed) {
@@ -13,12 +15,15 @@ public:
 		sprite.setTexture(texture);
 		if (size == BIG) {
 			sprite.setScale(0.4f, 0.4f);
+			damage = 30;
 		}
 		else if (size == AVERAGE) {
 			sprite.setScale(0.2f, 0.2f);
+			damage = 15;
 		}
 		else if (size == SMALL) {
 			sprite.setScale(0.125f, 0.125f);
+			damage = 5;
 		}
 		sprite.setPosition(pos);
 		speed = fspeed;
@@ -47,4 +52,6 @@ public:
 	}
 
 	sf::Sprite& getSprite() { return sprite; }
+	int getDamage() { return damage; }
+	sf::FloatRect getHitBox() { return sprite.getGlobalBounds(); }
 };

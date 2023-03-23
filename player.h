@@ -3,6 +3,7 @@
 #include "cmath"
 #include <list>
 #include "laser.h"
+#include "textobj.h"
 
 class Player {
 private:
@@ -12,9 +13,11 @@ private:
 	float speed, speedx, speedy;
 	std::list<Laser*> lasers;
 	sf::Clock timer;
+	int hp = 100;
+	TextObj hpText;
 
 public:
-	Player() {
+	Player():hpText(std::to_string(hp), HP_TEXT_POS) {
 		texture.loadFromFile(PLAYER_FILE_NAME);
 		sprite.setTexture(texture);
 		sf::FloatRect bounds = sprite.getLocalBounds();
@@ -49,6 +52,7 @@ public:
 		for (auto laser : lasers) {
 			laser->update();
 		}
+		hpText.update("HP:" + std::to_string(hp));
 	}
 
 	void fire() {
@@ -65,9 +69,12 @@ public:
 	}
 
 	void draw(sf::RenderWindow& window) {
-		window.draw(sprite);
 		for (auto laser : lasers) {
 			window.draw(laser->getSprite());
 		}
+		window.draw(sprite);
+		hpText.draw(window);
 	}
+	void decreaseHp(int damage) { hp -= damage; }
+	sf::FloatRect getHitBox() { return sprite.getGlobalBounds(); }
 };

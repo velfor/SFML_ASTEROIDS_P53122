@@ -10,6 +10,9 @@ const double PI = 3.141592653589793;
 
 const std::string IMAGES_FOLDER = "images\\";
 const std::string PLAYER_FILE_NAME = "images\\spaceShips_008.png";
+const int CHAR_SIZE = 48;
+const std::string FONT_FILE_NAME = "ds-digib.ttf";
+sf::Vector2f HP_TEXT_POS(0.f, 0.f);
 
 const float TOP_BORDER = -300.f;
 const float BOTTOM_BORDER = 1200.f;

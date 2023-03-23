@@ -2,23 +2,24 @@
 #include "SFML/Graphics.hpp"
 #include "settings.h"
 
-struct TextObj {
+class TextObj {
+private:
 	sf::Font font;
 	sf::Text text;
+public:
+	TextObj(std::string str, sf::Vector2f pos) {
+		font.loadFromFile(FONT_FILE_NAME);
+		text.setFont(font);
+		text.setCharacterSize(CHAR_SIZE);
+		text.setPosition(pos);
+		text.setString(str);
+	}
+
+	void update(std::string str) {
+		text.setString(str);
+	}
+
+	void draw(sf::RenderWindow& window) {
+		window.draw(text);
+	}
 };
-
-void textInit(TextObj& textobj, int score) {
-	textobj.font.loadFromFile("ds-digib.ttf");
-	textobj.text.setString(std::to_string(score));
-	textobj.text.setFont(textobj.font);
-	textobj.text.setCharacterSize(CHAR_SIZE);
-	textobj.text.setPosition(TEXT_START_POS);
-}
-
-void textUpdate(TextObj& textobj, int score) {
-	textobj.text.setString(std::to_string(score));
-}
-
-void textDraw(sf::RenderWindow& window, const TextObj& textobj) {
-	window.draw(textobj.text);
-}
