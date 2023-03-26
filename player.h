@@ -75,6 +75,10 @@ public:
 		window.draw(sprite);
 		hpText.draw(window);
 	}
+
 	void decreaseHp(int damage) { hp -= damage; }
+
 	sf::FloatRect getHitBox() { return sprite.getGlobalBounds(); }
+	
+	std::list<Laser*>* getLasers() { return &lasers; }
 };

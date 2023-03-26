@@ -52,10 +52,25 @@ public:
 		for (auto& meteor : meteors) {
 			sf::FloatRect meteorBounds = meteor->getHitBox();
 			if (meteorBounds.intersects(playerBounds)) {
-				//переспавнить метеор
-				//нанести урон игроку, уменьшить хп
+				meteor->setRandomPosition();
+				player.decreaseHp(meteor->getDamage());
 			}
 		}
+		//каждая пуля с каждым метеором
+		auto laserSprites = player.getLasers();
+		for (auto& meteor : meteors) {
+			sf::FloatRect meteorBounds = meteor->getHitBox();
+			for (auto laser : (* laserSprites)) {
+				sf::FloatRect laserBounds = laser->getHitBox();
+				if (meteorBounds.intersects(laserBounds)) {
+					meteor->setRandomPosition();
+					//bonus_sprites.remove_if([&active_bonus](const auto &bonus) { return active_bonus.count(bonus) > 0; });
+					(*laserSprites).remove_if([meteorBounds](auto laser) {
+						return meteorBounds.intersects(laser->getHitBox()); });
+				}
+			}
+		}
+
 	}
 
 	void draw() {

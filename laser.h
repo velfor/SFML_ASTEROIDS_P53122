@@ -22,4 +22,6 @@ public:
 	}
 
 	sf::Sprite& getSprite() { return sprite; }
+
+	sf::FloatRect getHitBox() { return sprite.getGlobalBounds(); }
 };
