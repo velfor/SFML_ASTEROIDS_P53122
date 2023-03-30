@@ -5,7 +5,7 @@ using namespace sf;
 
 int main()
 {
-	srand(time(nullptr));
+	srand((unsigned int)time(nullptr));
 	Game game;
 	game.play();
 	return 0;

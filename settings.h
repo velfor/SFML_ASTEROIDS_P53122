@@ -4,7 +4,7 @@
 const float WINDOW_WIDTH = 1200;
 const float WINDOW_HEIGHT = 900;
 const std::string WINDOW_TITLE = "SFML Asteroids P53122";
-const float FPS = 60.f;
+const size_t FPS = 60;
 
 const double PI = 3.141592653589793;
 

@@ -35,7 +35,7 @@ public:
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 			angle += 3;
 		}
-		sprite.setRotation(angle);
+		sprite.setRotation((float)angle);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {//вперед
 			speed += 0.5f;
 		}
@@ -45,8 +45,8 @@ public:
 		if (speed < 0) speed = 0.f;
 		else if (speed > 10.f) speed = 10.f;
 
-		speedx = speed * sin(angle * PI / 180);
-		speedy = -speed * cos(angle * PI / 180);
+		speedx = speed * (float)sin(angle * PI / 180);
+		speedy = -speed * (float)cos(angle * PI / 180);
 		sprite.move(speedx,speedy);
 		fire();
 		for (auto laser : lasers) {

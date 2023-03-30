@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "SFML/Graphics.hpp"
 #include "settings.h"
 #include <vector>
@@ -56,21 +56,21 @@ public:
 				player.decreaseHp(meteor->getDamage());
 			}
 		}
-		//������ ���� � ������ ��������
+
 		auto laserSprites = player.getLasers();
 		for (auto& meteor : meteors) {
 			sf::FloatRect meteorBounds = meteor->getHitBox();
 			for (auto laser : (* laserSprites)) {
 				sf::FloatRect laserBounds = laser->getHitBox();
 				if (meteorBounds.intersects(laserBounds)) {
+					//добавить к счету столько очков, сколько стоит сбитый метеор
 					meteor->setRandomPosition();
-					//bonus_sprites.remove_if([&active_bonus](const auto &bonus) { return active_bonus.count(bonus) > 0; });
-					(*laserSprites).remove_if([meteorBounds](auto laser) {
-						return meteorBounds.intersects(laser->getHitBox()); });
+					laser->hit();
 				}
 			}
 		}
-
+		(*laserSprites).remove_if([](Laser* laser) { return laser->getHit(); });
+		(*laserSprites).remove_if([](Laser* laser) { return laser->offScreen(); });
 	}
 
 	void draw() {
