@@ -6,13 +6,14 @@
 #include "player.h"
 #include <list>
 #include "laser.h"
+#include "hp_bar.h"
 
 class Game {
 private:
 	sf::RenderWindow window;
 	std::vector<Meteor*> meteors;
 	Player player;
-	
+	HpBar hpBar;
 
 public:
 	void spawnMeteors(size_t n) {
@@ -45,6 +46,7 @@ public:
 			meteors.at(i)->update();
 		}
 		player.update();
+		hpBar.update(player.getHp());
 	}
 
 	void checkCollisions() {
@@ -80,6 +82,7 @@ public:
 		}
 		//window.draw(player.getSprite());
 		player.draw(window);
+		hpBar.draw(window);
 		window.display();
 	}
 

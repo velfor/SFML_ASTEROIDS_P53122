@@ -14,10 +14,9 @@ private:
 	std::list<Laser*> lasers;
 	sf::Clock timer;
 	int hp = 100;
-	TextObj hpText;
 
 public:
-	Player():hpText(std::to_string(hp), HP_TEXT_POS) {
+	Player(){
 		texture.loadFromFile(PLAYER_FILE_NAME);
 		sprite.setTexture(texture);
 		sf::FloatRect bounds = sprite.getLocalBounds();
@@ -52,7 +51,7 @@ public:
 		for (auto laser : lasers) {
 			laser->update();
 		}
-		hpText.update("HP:" + std::to_string(hp));
+		
 	}
 
 	void fire() {
@@ -73,7 +72,6 @@ public:
 			window.draw(laser->getSprite());
 		}
 		window.draw(sprite);
-		hpText.draw(window);
 	}
 
 	void decreaseHp(int damage) { hp -= damage; }
@@ -81,4 +79,6 @@ public:
 	sf::FloatRect getHitBox() { return sprite.getGlobalBounds(); }
 	
 	std::list<Laser*>* getLasers() { return &lasers; }
+
+	int getHp() { return hp; }
 };
