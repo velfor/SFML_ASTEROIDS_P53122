@@ -13,6 +13,8 @@ const std::string PLAYER_FILE_NAME = "images\\spaceShips_008.png";
 const int CHAR_SIZE = 48;
 const std::string FONT_FILE_NAME = "ds-digib.ttf";
 sf::Vector2f HP_TEXT_POS(0.f, 0.f);
+const int MAX_PLAYER_LIVES = 3;
+const int MAX_PLAYER_HP = 100;
 
 const float TOP_BORDER = -300.f;
 const float BOTTOM_BORDER = 1200.f;
@@ -25,3 +27,5 @@ const int FIRE_COOLDOWN = 200;
 
 const float FRAME_WIDTH = 150.f;
 const float FRAME_HEIGHT = 30.f;
+
+const std::string LIFE_ICON_FILE_NAME{ "star_gold.png" };

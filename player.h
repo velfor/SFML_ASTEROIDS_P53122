@@ -14,6 +14,7 @@ private:
 	std::list<Laser*> lasers;
 	sf::Clock timer;
 	int hp = 100;
+	int lives = MAX_PLAYER_LIVES;
 
 public:
 	Player(){
@@ -81,4 +82,12 @@ public:
 	std::list<Laser*>* getLasers() { return &lasers; }
 
 	int getHp() { return hp; }
+
+	void restoreHp() { hp = MAX_PLAYER_HP; }
+
+	void playerAddLife() { lives++; }
+
+	void playerMinusLife() { lives--; }
+
+	int getLives() { return lives; }
 };

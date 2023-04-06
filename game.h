@@ -7,6 +7,7 @@
 #include <list>
 #include "laser.h"
 #include "hp_bar.h"
+#include "lives_indicator.h"
 
 class Game {
 private:
@@ -14,6 +15,7 @@ private:
 	std::vector<Meteor*> meteors;
 	Player player;
 	HpBar hpBar;
+	std::list<LivesIndicator*> livesIndicator;
 
 public:
 	void spawnMeteors(size_t n) {
@@ -33,6 +35,12 @@ public:
 		window.create(sf::VideoMode{ (size_t)WINDOW_WIDTH, (size_t)WINDOW_HEIGHT}, WINDOW_TITLE);
 		window.setFramerateLimit(FPS);
 		spawnMeteors(20);
+		for (size_t i = 0; i < MAX_PLAYER_LIVES; i++) {
+			float xPos = WINDOW_WIDTH / 2 - 64.f;
+			float yPos = 10.f;
+			LivesIndicator* life = new LivesIndicator(sf::Vector2f{xPos + i*48.f, yPos});
+			livesIndicator.push_back(life);
+		}
 	}
 
 	void checkEvents() {
@@ -50,12 +58,19 @@ public:
 	}
 
 	void checkCollisions() {
+		//метеоры c игроком
 		sf::FloatRect playerBounds = player.getHitBox();
 		for (auto& meteor : meteors) {
 			sf::FloatRect meteorBounds = meteor->getHitBox();
 			if (meteorBounds.intersects(playerBounds)) {
 				meteor->setRandomPosition();
 				player.decreaseHp(meteor->getDamage());
+				if (player.getHp() < 0) {
+					player.playerMinusLife();
+					//если жизни == 0  - конец игры
+					player.restoreHp();
+					livesIndicator.pop_back();
+				}
 			}
 		}
 
@@ -83,6 +98,9 @@ public:
 		//window.draw(player.getSprite());
 		player.draw(window);
 		hpBar.draw(window);
+		for (auto& life : livesIndicator) {
+			life->draw(window);
+		}
 		window.display();
 	}
 
