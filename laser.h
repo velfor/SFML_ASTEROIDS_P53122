@@ -5,34 +5,45 @@ class Laser {
 private:
 	sf::Sprite sprite;
 	sf::Texture texture;
-	float speedy;
-	bool hit;
+	float speedx, speedy;
+	bool m_hit;
 
 public:
-	Laser(sf::Vector2f pos) {
+	Laser(sf::Vector2f playerPos, int playerAngle) {
 		texture.loadFromFile(IMAGES_FOLDER + LASER_FILE_NAME);
 		sprite.setTexture(texture);
+		sprite.setRotation((float)playerAngle);
 		sf::FloatRect bounds = sprite.getLocalBounds();
 		sprite.setOrigin(bounds.width / 2, bounds.height / 2);
-		sprite.setPosition(pos);
-		speedy = -15.f;
-		hit = false;
+		sprite.setPosition(playerPos);
+		speedx = LASER_SPEED * (float)sin(playerAngle * PI / 180);
+		speedy = -LASER_SPEED * (float)cos(playerAngle * PI / 180);
+		m_hit = false;
 	}
 
-	void update() {
-		sprite.move(0.f, speedy);
-	}
+	void update() {	sprite.move(speedx, speedy); }
 
 	sf::Sprite& getSprite() { return sprite; }
 
-	sf::FloatRect getHitBox() { return sprite.getGlobalBounds(); }
+	auto getHitBox() { return sprite.getGlobalBounds(); }
 
-	void setHit() { hit = true; }
+	void hit() { m_hit = true; }
 
-	bool isHited() { return hit; }
+	bool getHit() { return m_hit; }
 
-	bool offScreen() {
-		if (sprite.getPosition().y > WINDOW_HEIGHT) return true;
+	auto getPosition() { return sprite.getPosition(); }
+
+	bool offScreen(){
+		auto laserPos = getPosition();
+		auto laserBounds = getHitBox();
+		if (laserPos.x < -laserBounds.width ||
+			laserPos.x > WINDOW_WIDTH + laserBounds.width ||
+			laserPos.y > WINDOW_HEIGHT + laserBounds.height ||
+			laserPos.y < -laserBounds.height)
+		{
+			return true;
+		}
 		return false;
 	}
+	
 };

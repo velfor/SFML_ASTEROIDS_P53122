@@ -5,50 +5,53 @@ class Meteor {
 private:
 	sf::Sprite sprite;
 	sf::Texture texture;
-	float speedx, speedy;
+	sf::Vector2f speed;
 	int damage;
-	
 
 public:
-	static std::string mFileNames[];
-	static int mDamage[];
-	Meteor() {
-		int index = rand() % METEOR_TYPES_QTY;
-		damage = mDamage[index];
-		texture.loadFromFile(IMAGES_FOLDER + mFileNames[index]);
+	enum MeteorSize {SMALL, AVERAGE, BIG};
+	Meteor(std::string fileName, MeteorSize size, sf::Vector2f pos, sf::Vector2f fspeed) {
+		texture.loadFromFile(fileName);
 		sprite.setTexture(texture);
-		spawn();
+		if (size == BIG) {
+			sprite.setScale(0.4f, 0.4f);
+			damage = 30;
+		}
+		else if (size == AVERAGE) {
+			sprite.setScale(0.2f, 0.2f);
+			damage = 15;
+		}
+		else if (size == SMALL) {
+			sprite.setScale(0.125f, 0.125f);
+			damage = 5;
+		}
+		sprite.setPosition(pos);
+		speed = fspeed;
 	}
 
 	void update() {
-		sprite.move(speedx, speedy);
-		sf::FloatRect bounds = sprite.getGlobalBounds();
-		if (bounds.left < -bounds.width || bounds.left > WINDOW_WIDTH ||
-			bounds.top > WINDOW_HEIGHT)
+		sprite.move(speed);
+		sf::Vector2f pos = sprite.getPosition();
+		if (pos.x < LEFT_BORDER || pos.x > RIGHT_BORDER || pos.y < TOP_BORDER || 
+			pos.y > BOTTOM_BORDER) 
 		{
-			spawn();
+			setRandomPosition();
 		}
 	}
 
-	sf::Sprite getSprite() { return sprite; }
-
-	sf::FloatRect getHitBox() { return sprite.getGlobalBounds(); }
-
-	void spawn() {
-		speedy = rand() % 6 + 2;
-		speedx = rand() % 5 - 2;
-		sf::FloatRect bounds = sprite.getGlobalBounds();
-		float x = rand() % (int)(WINDOW_WIDTH - bounds.width);
-		float y = -(rand() % (int)(WINDOW_HEIGHT - bounds.height) + bounds.height);
+	void setRandomPosition() {
+		float x = rand() % 301 - 300.f;
+		int choice = rand() % 10000;
+		if (choice < 5000) x += 1500.f;
+		float y = rand() % 301 - 300.f;
+		choice = rand() % 10000;
+		if (choice < 5000) y += 1200.f;
 		sprite.setPosition(x, y);
+		float speedx = rand() % 9 - 4.f;
+		float speedy = rand() % 9 - 4.f;
 	}
 
+	sf::Sprite& getSprite() { return sprite; }
 	int getDamage() { return damage; }
-
-	sf::Vector2f getPosition() { return sprite.getPosition(); }
+	sf::FloatRect getHitBox() { return sprite.getGlobalBounds(); }
 };
-
-std::string Meteor::mFileNames[] = { "meteorBrown_big1.png",  "meteorBrown_big2.png",
-	"meteorBrown_med1.png", "meteorBrown_med2.png", "meteorBrown_small1.png",
-	"meteorBrown_small2.png", "meteorBrown_tiny1.png", "meteorBrown_tiny2.png" };
-int Meteor::mDamage[] = {30,30,20,20,10,10,5,5};

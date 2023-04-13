@@ -1,19 +1,47 @@
-#pragma once
+п»ї#pragma once
+#include "SFML/Graphics.hpp"
 #include "settings.h"
-#include "player.h"
-#include "meteor.h"
 #include <vector>
-#include "textobj.h"
-#include "bonus.h"
+#include "meteor.h"
+#include "player.h"
+#include <list>
+#include "laser.h"
+#include "hp_bar.h"
+#include "lives_indicator.h"
 
 class Game {
 private:
 	sf::RenderWindow window;
+	std::vector<Meteor*> meteors;
 	Player player;
-	std::vector<Meteor*> meteorSprites;
-	TextObj lives;
-	sf::RectangleShape rect;
-	std::list<Bonus*> bonusSprites;
+	HpBar hpBar;
+	std::list<LivesIndicator*> livesIndicator;
+
+public:
+	void spawnMeteors(size_t n) {
+		for (int i = 0; i < n; i++) {
+			int num = rand() % 4 + 1;
+			std::string fileName = "images\\spaceMeteors_00" + std::to_string(num) + ".png";
+			Meteor::MeteorSize size = (Meteor::MeteorSize)(rand() % 3);
+			float x = rand() % 1801 - 300.f;
+			float y = rand() % 1501 - 300.f;
+			float speedx = rand() % 11 - 5.f;
+			float speedy = rand() % 11 - 5.f;
+			Meteor* m = new Meteor(fileName, size, sf::Vector2f{ x,y }, sf::Vector2f{speedx, speedy});
+			meteors.push_back(m);
+		}
+	}
+	Game() {
+		window.create(sf::VideoMode{ (size_t)WINDOW_WIDTH, (size_t)WINDOW_HEIGHT}, WINDOW_TITLE);
+		window.setFramerateLimit(FPS);
+		spawnMeteors(20);
+		for (size_t i = 0; i < MAX_PLAYER_LIVES; i++) {
+			float xPos = WINDOW_WIDTH / 2 - 64.f;
+			float yPos = 10.f;
+			LivesIndicator* life = new LivesIndicator(sf::Vector2f{xPos + i*48.f, yPos});
+			livesIndicator.push_back(life);
+		}
+	}
 
 	void checkEvents() {
 		sf::Event event;
@@ -22,92 +50,62 @@ private:
 	}
 
 	void update() {
+		for (int i = 0; i < meteors.size(); i++) {
+			meteors.at(i)->update();
+		}
 		player.update();
-		for (auto& m : meteorSprites) {
-			m->update();
-		}
-		lives.update(std::to_string(player.getLives()));
-		for (auto& bonus : bonusSprites) {
-			bonus->update();
-		}
+		hpBar.update(player.getHp());
 	}
 
 	void checkCollisions() {
-		sf::FloatRect playerHitBox = player.getHitBox();
-		auto laserSprites = player.getLasers();
-		for (auto& meteor : meteorSprites) {
-			//игрок с метеорами
-			sf::FloatRect meteorHitBox = meteor->getHitBox();
-			if (meteorHitBox.intersects(playerHitBox)) {
-				meteor->spawn();
-				player.receiveDamage(meteor->getDamage());
-			}
-			//лазеры с метеорами
-			for (auto& laser : (*laserSprites)) {
-				sf::FloatRect laserHitBox = laser->getHitBox();
-				//пуля попала в метеор
-				if (laserHitBox.intersects(meteorHitBox)) {
-					//начисление очков за сбитые метеоры
-					meteor->spawn();
-					laser->setHit();
-					int chance = rand() % BONUS_RANGE;
-					if (chance < BONUS_CHANCE) {
-						Bonus* bonus = new Bonus(
-							(Bonus::BonusType)0, 
-							meteor->getPosition()
-						);
-						bonusSprites.push_back(bonus);
-					}
-				}
-			}
-
-			//бонусы с игроком
-			for (auto& bonus : bonusSprites) {
-				sf::FloatRect bonusHitBox = bonus->getHitBox();
-				if (bonusHitBox.intersects(playerHitBox)) {
-					bonus->act(player);
-					bonus->setDel();
+		//РјРµС‚РµРѕСЂС‹ c РёРіСЂРѕРєРѕРј
+		sf::FloatRect playerBounds = player.getHitBox();
+		for (auto& meteor : meteors) {
+			sf::FloatRect meteorBounds = meteor->getHitBox();
+			if (meteorBounds.intersects(playerBounds)) {
+				meteor->setRandomPosition();
+				player.decreaseHp(meteor->getDamage());
+				if (player.getHp() < 0) {
+					player.playerMinusLife();
+					//РµСЃР»Рё Р¶РёР·РЅРё == 0  - РєРѕРЅРµС† РёРіСЂС‹
+					player.restoreHp();
+					livesIndicator.pop_back();
 				}
 			}
 		}
-		//удалить попавшие пули (у которых hit == true)
-		(*laserSprites).remove_if([](Laser* laser) {return laser->isHited(); });
-		(*laserSprites).remove_if([](Laser* laser) {return laser->offScreen(); });
-		bonusSprites.remove_if([](Bonus* bonus) {return bonus->offScreen(); });
-		bonusSprites.remove_if([](Bonus* bonus) {return bonus->isToDel(); });
+
+		auto laserSprites = player.getLasers();
+		for (auto& meteor : meteors) {
+			sf::FloatRect meteorBounds = meteor->getHitBox();
+			for (auto laser : (* laserSprites)) {
+				sf::FloatRect laserBounds = laser->getHitBox();
+				if (meteorBounds.intersects(laserBounds)) {
+					//РґРѕР±Р°РІРёС‚СЊ Рє СЃС‡РµС‚Сѓ СЃС‚РѕР»СЊРєРѕ РѕС‡РєРѕРІ, СЃРєРѕР»СЊРєРѕ СЃС‚РѕРёС‚ СЃР±РёС‚С‹Р№ РјРµС‚РµРѕСЂ
+					meteor->setRandomPosition();
+					laser->hit();
+				}
+			}
+		}
+		(*laserSprites).remove_if([](Laser* laser) { return laser->getHit(); });
+		(*laserSprites).remove_if([](Laser* laser) { return laser->offScreen(); });
 	}
 
 	void draw() {
 		window.clear();
-		for (auto m : meteorSprites) {
-			window.draw(m->getSprite());
+		for (int i = 0; i < meteors.size(); i++) {
+			window.draw(meteors.at(i)->getSprite());
 		}
-		window.draw(rect);
+		//window.draw(player.getSprite());
 		player.draw(window);
-		window.draw(lives.getText());
-		for (auto& bonus : bonusSprites) {
-			bonus->draw(window);
+		hpBar.draw(window);
+		for (auto& life : livesIndicator) {
+			life->draw(window);
 		}
 		window.display();
 	}
 
-public:
-	Game() : 
-		window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE),
-		lives(std::to_string(player.getLives()), sf::Vector2f{WINDOW_WIDTH/2,0.f})
-	{
-		window.setFramerateLimit(FPS);
-		meteorSprites.reserve(METEOR_QTY);
-		for (int i = 0; i < METEOR_QTY; i++) {
-			meteorSprites.push_back(new Meteor());
-		}
-		rect.setFillColor(sf::Color::Green);
-		rect.setSize(sf::Vector2f{ WINDOW_WIDTH, 40.f });
-	}
-
 	void play() {
-		while (window.isOpen() && player.isAlive())
-		{
+		while (window.isOpen())	{
 			checkEvents();
 			update();
 			checkCollisions();
