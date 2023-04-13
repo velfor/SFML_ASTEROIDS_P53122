@@ -29,3 +29,6 @@ const float FRAME_WIDTH = 150.f;
 const float FRAME_HEIGHT = 30.f;
 
 const std::string LIFE_ICON_FILE_NAME{ "star_gold.png" };
+const std::string BONUS_MEDKIT_FILE_NAME{ "pill_yellow.png" };
+const std::string BONUS_SPEED_BOOST_FILE_NAME{ "bolt_gold.png" };
+const std::string BONUS_KABOOM_FILE_NAME{ "icon-explosion.png" };

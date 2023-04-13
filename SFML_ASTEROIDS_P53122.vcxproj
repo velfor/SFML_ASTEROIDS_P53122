@@ -131,6 +131,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bonusr.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="laser.h" />
     <ClInclude Include="lives_indicator.h" />
