@@ -52,6 +52,12 @@ public:
 	}
 
 	sf::Sprite& getSprite() { return sprite; }
+
 	int getDamage() { return damage; }
+
 	sf::FloatRect getHitBox() { return sprite.getGlobalBounds(); }
+
+	sf::Vector2f getPosition();
 };
+
+sf::Vector2f Meteor::getPosition() { return sprite.getPosition(); }

@@ -8,6 +8,7 @@
 #include "laser.h"
 #include "hp_bar.h"
 #include "lives_indicator.h"
+#include "bonusr.h"
 
 class Game {
 private:
@@ -16,6 +17,7 @@ private:
 	Player player;
 	HpBar hpBar;
 	std::list<LivesIndicator*> livesIndicator;
+	std::list<Bonus*> bonuses;
 
 public:
 	void spawnMeteors(size_t n) {
@@ -55,6 +57,9 @@ public:
 		}
 		player.update();
 		hpBar.update(player.getHp());
+		for (auto& bonus : bonuses) {
+			bonus->update();
+		}
 	}
 
 	void checkCollisions() {
@@ -80,14 +85,32 @@ public:
 			for (auto laser : (* laserSprites)) {
 				sf::FloatRect laserBounds = laser->getHitBox();
 				if (meteorBounds.intersects(laserBounds)) {
+					//с каким-то шансом появляется бонус из сбитого метеора
+					int chance = rand() % 30000;
+					int bonusType = rand() % Bonus::BonusType::MAX_BONUS_TYPE;
+					if (chance < 15000) {
+						Bonus* bonus = new Bonus(
+							meteor->getPosition(), (Bonus::BonusType)bonusType
+						);
+						bonuses.push_back(bonus);
+					}
 					//добавить к счету столько очков, сколько стоит сбитый метеор
 					meteor->setRandomPosition();
 					laser->hit();
 				}
 			}
 		}
+
+		for (auto& bonus : bonuses) {
+			sf::FloatRect bonusBounds = bonus->getHitBox();
+			if (bonusBounds.intersects(playerBounds)) {
+				bonus->act(player);
+				bonus->setDel();
+			}
+		}
 		(*laserSprites).remove_if([](Laser* laser) { return laser->getHit(); });
 		(*laserSprites).remove_if([](Laser* laser) { return laser->offScreen(); });
+		bonuses.remove_if([](Bonus* bonus) { return bonus->isToDel(); });
 	}
 
 	void draw() {
@@ -100,6 +123,9 @@ public:
 		hpBar.draw(window);
 		for (auto& life : livesIndicator) {
 			life->draw(window);
+		}
+		for (auto& bonus : bonuses) {
+			bonus->draw(window);
 		}
 		window.display();
 	}

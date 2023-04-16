@@ -15,6 +15,8 @@ private:
 	sf::Clock timer;
 	int hp = 100;
 	int lives = MAX_PLAYER_LIVES;
+	float dv = 0.5f;
+	float maxSpeed = 10.f;
 
 public:
 	Player(){
@@ -37,13 +39,13 @@ public:
 		}
 		sprite.setRotation((float)angle);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {//вперед
-			speed += 0.5f;
+			speed += dv;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {//назад
-			speed -= 0.25f;
+			speed -= dv/2;
 		}
 		if (speed < 0) speed = 0.f;
-		else if (speed > 10.f) speed = 10.f;
+		else if (speed > maxSpeed) speed = maxSpeed;
 
 		speedx = speed * (float)sin(angle * PI / 180);
 		speedy = -speed * (float)cos(angle * PI / 180);
@@ -90,4 +92,16 @@ public:
 	void playerMinusLife() { lives--; }
 
 	int getLives() { return lives; }
+
+	void addHp(int hp);
+
+	void addSpeed();
 };
+
+void Player::addHp(int hp) { this->hp += hp; }
+
+void Player::addSpeed() {
+	dv *= 2;
+	maxSpeed *= 2;
+}
+
