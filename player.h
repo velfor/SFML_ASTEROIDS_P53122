@@ -17,6 +17,8 @@ private:
 	int lives = MAX_PLAYER_LIVES;
 	float dv = 0.5f;
 	float maxSpeed = 10.f;
+	bool speedBonusActive = false;
+	int speedBonusActivateTime, prevFireTime;
 
 public:
 	Player(){
@@ -28,6 +30,7 @@ public:
 		angle = 0;
 		speed = 0.f;
 		timer.restart();
+		prevFireTime = timer.getElapsedTime().asMilliseconds();
 	}
 
 	void update() {
@@ -54,18 +57,23 @@ public:
 		for (auto laser : lasers) {
 			laser->update();
 		}
-		
+		int currTime = timer.getElapsedTime().asMilliseconds();
+		if (currTime - speedBonusActivateTime > BONUS_OPERATING_TIME && speedBonusActive) {
+			speedBonusActive = false;
+			dv /= 2;
+			maxSpeed /= 2;
+		}
 	}
 
 	void fire() {
-		int now = timer.getElapsedTime().asMilliseconds();
-		if (now > FIRE_COOLDOWN) {
+		int currTime = timer.getElapsedTime().asMilliseconds();
+		if (currTime - prevFireTime > FIRE_COOLDOWN) {
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) ||
 				sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			{
 				auto laser = new Laser(sprite.getPosition(), angle);
 				lasers.push_back(laser);
-				timer.restart();
+				prevFireTime = currTime;
 			}
 		}
 	}
@@ -98,10 +106,15 @@ public:
 	void addSpeed();
 };
 
-void Player::addHp(int hp) { this->hp += hp; }
+void Player::addHp(int hp) { 
+	this->hp += hp; 
+	if (this->hp > 100) this->hp = 100;
+}
 
 void Player::addSpeed() {
+	speedBonusActive = true;
 	dv *= 2;
 	maxSpeed *= 2;
+	speedBonusActivateTime = timer.getElapsedTime().asMilliseconds();
 }
 

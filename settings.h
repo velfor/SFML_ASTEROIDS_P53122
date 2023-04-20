@@ -32,3 +32,4 @@ const std::string LIFE_ICON_FILE_NAME{ "star_gold.png" };
 const std::string BONUS_MEDKIT_FILE_NAME{ "pill_yellow.png" };
 const std::string BONUS_SPEED_BOOST_FILE_NAME{ "bolt_gold.png" };
 const std::string BONUS_KABOOM_FILE_NAME{ "icon-explosion.png" };
+const int BONUS_OPERATING_TIME{ 5000 };

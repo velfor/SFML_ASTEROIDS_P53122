@@ -86,11 +86,11 @@ public:
 				sf::FloatRect laserBounds = laser->getHitBox();
 				if (meteorBounds.intersects(laserBounds)) {
 					//с каким-то шансом появляется бонус из сбитого метеора
-					int chance = rand() % 30000;
-					int bonusType = rand() % Bonus::BonusType::MAX_BONUS_TYPE;
+					size_t chance = rand() % 30000;
+					size_t bonusType = rand() % Bonus::BonusType::MAX_BONUS_TYPE;
 					if (chance < 15000) {
 						Bonus* bonus = new Bonus(
-							meteor->getPosition(), (Bonus::BonusType)bonusType
+							meteor->getPosition(), bonusType
 						);
 						bonuses.push_back(bonus);
 					}

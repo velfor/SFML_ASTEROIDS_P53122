@@ -63,7 +63,7 @@ void Bonus::act(Player& player) {
 		player.addHp(50);
 		break;
 	case SPEED_BOOST:
-		
+		player.addSpeed();
 		break;
 	case KABOOM:
 		
