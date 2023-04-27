@@ -1,9 +1,9 @@
 #pragma once
-#include "settings.h"
+#include "game_object.h"
 
 class Player;
 
-class Bonus {
+class Bonus : public GameObject{
 public:
 	enum BonusType { MEDKIT, SPEED_BOOST, KABOOM, MAX_BONUS_TYPE};
 	Bonus(sf::Vector2f meteorPos, size_t bonusType);
@@ -16,8 +16,6 @@ public:
 
 private:
 	BonusType type;
-	sf::Texture texture;
-	sf::Sprite sprite;
 	sf::Clock timer;
 	bool del = false;
 };
@@ -35,6 +33,7 @@ Bonus::Bonus(sf::Vector2f meteorPos, size_t bonusType) {
 		texture.loadFromFile(IMAGES_FOLDER + BONUS_KABOOM_FILE_NAME);
 		break;
 	}
+	//texture.loadFromFile();
 	sprite.setTexture(texture);
 	sprite.setPosition(meteorPos);
 	timer.restart();

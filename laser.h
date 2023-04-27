@@ -1,10 +1,8 @@
 #pragma once
-#include "settings.h"
+#include "game_object.h"
 
-class Laser {
+class Laser : public GameObject{
 private:
-	sf::Sprite sprite;
-	sf::Texture texture;
 	float speedx, speedy;
 	bool m_hit;
 
@@ -23,15 +21,11 @@ public:
 
 	void update() {	sprite.move(speedx, speedy); }
 
-	sf::Sprite& getSprite() { return sprite; }
-
-	auto getHitBox() { return sprite.getGlobalBounds(); }
+	void draw(sf::RenderWindow& window) { window.draw(sprite); }
 
 	void hit() { m_hit = true; }
 
 	bool getHit() { return m_hit; }
-
-	auto getPosition() { return sprite.getPosition(); }
 
 	bool offScreen(){
 		auto laserPos = getPosition();

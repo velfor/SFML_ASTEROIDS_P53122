@@ -80,7 +80,7 @@ public:
 
 	void draw(sf::RenderWindow& window) {
 		for (auto laser : lasers) {
-			window.draw(laser->getSprite());
+			laser->draw(window);
 		}
 		window.draw(sprite);
 	}

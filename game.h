@@ -1,6 +1,5 @@
 ﻿#pragma once
-#include "SFML/Graphics.hpp"
-#include "settings.h"
+#include "game_object.h"
 #include <vector>
 #include "meteor.h"
 #include "player.h"
@@ -9,6 +8,7 @@
 #include "hp_bar.h"
 #include "lives_indicator.h"
 #include "bonusr.h"
+
 
 class Game {
 private:
